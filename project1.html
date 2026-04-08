@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vigyaan Hub</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
+body{background:#0f172a;color:#fff}
+header{background:#020617;padding:15px;text-align:center;font-size:22px;font-weight:600}
+nav{display:flex;justify-content:center;gap:20px;background:#020617;padding:10px}
+nav button{background:none;border:none;color:#fff;cursor:pointer;font-size:16px}
+section{display:none;padding:20px}
+.active{display:block}
+.card{background:#1e293b;padding:20px;border-radius:12px;max-width:600px;margin:auto}
+input,select,button{width:100%;padding:10px;margin:10px 0;border-radius:8px;border:none}
+button{background:#38bdf8;color:#000;font-weight:bold;cursor:pointer}
+table{width:100%;border-collapse:collapse;margin-top:20px}
+th,td{border:1px solid #334155;padding:8px;text-align:left}
+th{background:#020617}
+</style>
+</head>
+
+<body>
+
+<header>🚀 Vigyaan Hub</header>
+
+<nav>
+<button onclick="show('predictor')">Rank Predictor</button>
+<button onclick="show('cutoff')">Cutoffs</button>
+<button onclick="show('seats')">Seats</button>
+</nav>
+
+<!-- Predictor -->
+<section id="predictor" class="active">
+<div class="card">
+<h2>Merit Predictor</h2>
+<input id="board" placeholder="Board PR">
+<input id="gujcet" placeholder="GUJCET PR">
+<button onclick="predict()">Predict</button>
+<div id="result"></div>
+</div>
+</section>
+
+<!-- Cutoff -->
+<section id="cutoff">
+<div class="card">
+<h2>Cutoff Search</h2>
+<select id="branch">
+<option>COMPUTER ENGINEERING</option>
+<option>CIVIL ENGINEERING</option>
+<option>ELECTRICAL ENGINEERING</option>
+</select>
+<button onclick="showCutoff()">Search</button>
+<table id="cutTable"></table>
+</div>
+</section>
+
+<!-- Seats -->
+<section id="seats">
+<div class="card">
+<h2>Seat Matrix</h2>
+<button onclick="showSeats()">Load Data</button>
+<table id="seatTable"></table>
+</div>
+</section>
+
+<script>
+const totalStudents = 39345;
+
+function show(id){
+ document.querySelectorAll('section').forEach(s=>s.classList.remove('active'));
+ document.getElementById(id).classList.add('active');
+}
+
+function predict(){
+ let b=parseFloat(board.value);
+ let g=parseFloat(gujcet.value);
+ let merit=(b+g)/2;
+ let rank=Math.round((1-(merit/100))*totalStudents);
+ result.innerHTML=`Merit PR: ${merit.toFixed(2)} <br> Rank: ${rank}`;
+}
+
+// SAMPLE DATA FROM PDF
+const cutoffData=[
+ {inst:"BVM",branch:"COMPUTER ENGINEERING",cat:"GEN",rank:1717},
+ {inst:"BVM",branch:"CIVIL ENGINEERING",cat:"GEN",rank:16351},
+ {inst:"MSU",branch:"COMPUTER ENGINEERING",cat:"GEN",rank:1087},
+ {inst:"MSU",branch:"CIVIL ENGINEERING",cat:"GEN",rank:13073}
+];
+
+function showCutoff(){
+ let br=branch.value;
+ let html="<tr><th>Institute</th><th>Category</th><th>Closing Rank</th></tr>";
+ cutoffData.filter(x=>x.branch==br).forEach(d=>{
+ html+=`<tr><td>${d.inst}</td><td>${d.cat}</td><td>${d.rank}</td></tr>`;
+ });
+ cutTable.innerHTML=html;
+}
+
+const seatData=[
+ {inst:"BVM",branch:"COMPUTER",intake:75,filled:75,vacant:0},
+ {inst:"BVM",branch:"CIVIL",intake:150,filled:150,vacant:0},
+ {inst:"MSU",branch:"COMPUTER",intake:75,filled:75,vacant:0},
+ {inst:"MSU",branch:"TEXTILE",intake:75,filled:4,vacant:71}
+];
+
+function showSeats(){
+ let html="<tr><th>Institute</th><th>Branch</th><th>Intake</th><th>Filled</th><th>Vacant</th></tr>";
+ seatData.forEach(d=>{
+ html+=`<tr><td>${d.inst}</td><td>${d.branch}</td><td>${d.intake}</td><td>${d.filled}</td><td>${d.vacant}</td></tr>`;
+ });
+ seatTable.innerHTML=html;
+}
+</script>
+
+</body>
+</html>
